@@ -108,6 +108,35 @@ const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height /
 const loadingText = this.add.text(screenCenterX, screenCenterY, 'Loading: 0%').setOrigin(0.5);
 ```
 
+
+
+```js
+// 測試大量圖檔
+for (let i = 0; i < 200; i++) {
+    this.load.image('bg' + i, 'assets/undersea.jpg')
+}
+
+// 創建 text
+let percentText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, '', {
+    font: '52px Open Sans',
+    fill: '#ffffff'
+}).setOrigin(0.5, 0.5)
+
+// 偵聽處理檔案
+this.load.on('progress', value => {
+    percentText.setText(parseInt(value * 100) + '%')
+})
+
+// 偵聽載入檔案結束
+this.load.on('complete', () => {
+    percentText.destroy()		// 載入完，把它從畫面上清除
+})
+```
+
+
+
+
+
 [reference](https://www.stephengarside.co.uk/blog/phaser-3-center-text-in-middle-of-screen/)
 
 
@@ -217,12 +246,50 @@ add_water_height = (self, add_h) => {
 
 
 
+## 創建重力物件
+
+```js
+scene.create = function() {
+    // 把物件賦予重力
+    let ground = this.add.sprite(180, 400, 'tile')
+    this.physics.add.existing(ground)
+
+    // 直接創建重力物件
+    let ground2 = this.physics.add.sprite(180, 200, 'tile')
+}
+```
+
+
+
 ## 設定重力
 
 ```javascript
 object.body.setAllowGravity(false);
 object.body.setAllowGravity(true);
 ```
+
+
+
+## 不受重力碰撞影響而變更位置
+
+```js
+ground.body.immovable = true
+```
+
+
+
+## 設定碰撞
+
+```javascript
+//讓兩個物件產生碰撞
+this.physics.add.collider(ground, ground2);
+
+//設定碰撞事件
+self.physics.add.collider(cube, self.weigh, weight_event, null, self);
+self.physics.add.collider(cube, self.box_down_side, boxDownSide_event, null, self);
+```
+
+
 
 
 
@@ -347,6 +414,73 @@ const game = new Phaser.Game(config);
 
 
 
-
-
 [reference](https://labs.phaser.io/edit.html?src=src/display/masks/magnify%20glass.js&v=3.55.2)
+
+
+
+
+
+## 相機效果
+
+
+
+```js
+scene.gameOver = function() {
+    // 500 ms 相機 shake 效果
+    this.cameras.main.shake(500)					
+    
+    // 偵聽 shake 動畫結束
+    this.cameras.main.on('camerashakecomplete', () => {
+        // 500 ms 相機 fade 效果
+        this.cameras.main.fade(500)				
+    })
+    
+    // 偵聽 fade out 動畫結束
+    this.cameras.main.on('camerafadeoutcomplete', () => {	
+        // 遊戲重新
+        this.scene.restart()						
+    })
+}
+```
+
+
+
+## 設定動畫
+
+```js
+scene.create = function() {
+    // 把 man 物件的 origin 設在中間正下方，並設為可互動
+    this.man = this.add.sprite(50, 310, 'man', 0).setOrigin(0.5, 1).setInteractive()
+
+    // 對於 man 增加 tweens 動畫
+    this.man.scaleTween = this.tweens.add({
+        targets: this.man,
+        scaleX: 1.2,
+        scaleY: 1.2,
+        duration: 1000
+    })
+}
+
+
+```
+
+上面一開始載入完時，就會自動執行動畫，所以可以多添加 paused: true
+
+```js
+this.man.scaleTween = this.tweens.add({
+    targets: this.man,
+    scaleX: 1.2,
+    scaleY: 1.2,
+    duration: 1000,
+    paused: true
+})
+```
+
+
+
+```js
+this.man.on('pointerdown', () => {
+    this.man.scaleTween.restart()
+})
+```
+
