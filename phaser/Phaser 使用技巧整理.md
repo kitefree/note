@@ -484,3 +484,15 @@ this.man.on('pointerdown', () => {
 })
 ```
 
+
+
+## 遊戲重新開始
+
+```javascript
+this.registry.destroy(); // destroy registry
+this.events.off(); // disable all active events
+this.scene.restart(); // restart current scene
+```
+
+
+
