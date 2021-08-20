@@ -12,11 +12,15 @@
 
 
 
-## 待閱讀
+## 閱讀
 
 [Move Objects According To The Mouse Position With Phaser 3](https://steemit.com/utopian-io/@onepice/move-objects-according-to-the-mouse-position-with-phaser-3)
 
 [how-to-create-sprite-sheets-for-phaser3](https://www.codeandweb.com/texturepacker/tutorials/how-to-create-sprite-sheets-for-phaser3)
+
+[Phaser 幫我撐個 30 天](https://ithelp.ithome.com.tw/users/20111617/ironman/1794)
+
+
 
 
 
@@ -276,7 +280,7 @@ object.body.setAllowGravity(true);
 ground.body.immovable = true
 ```
 
-
+![](https://i.imgur.com/XMNk5zd.png)
 
 ## 設定碰撞
 
@@ -420,6 +424,16 @@ const game = new Phaser.Game(config);
 
 
 
+## 這裡開始跟專案無關
+
+
+
+## 工具
+
+- 此工具可以編輯你想要的背景、放置圖像，最後導出 json，在 phaser 中再引入該 json。[Tiled Map Edito](https://thorbjorn.itch.io/tiled)
+
+![](https://i.imgur.com/KD1Boy0.png)
+
 ## 相機效果
 
 
@@ -486,6 +500,49 @@ this.man.on('pointerdown', () => {
 
 
 
+## 設定動畫
+
+
+
+```js
+scene.create = function() {
+    this.anims.create({
+        key: 'walking',
+        frames: this.anims.generateFrameNames('player', { frames: [1, 2 ]}),
+        frameRate: 10,
+        yoyo: true,
+        repeat: -1
+    })
+}
+```
+
+
+
+```javascript
+scene.update = function() {
+    // 判斷鍵盤左鍵、右鍵
+    if (this.cursors.left.isDown) {
+        .....
+        this.player.anims.play('walking')
+    } else if (this.cursors.right.isDown) {
+        .....
+        this.player.anims.play('walking')
+    } else {
+        .....
+        this.player.anims.stop('walking')
+        this.player.setFrame(0)			// 顯示在第一張圖片上
+    }
+}
+```
+
+
+
+
+
+
+
+
+
 ## 遊戲重新開始
 
 ```javascript
@@ -496,3 +553,98 @@ this.scene.restart(); // restart current scene
 
 
 
+
+
+## 加載進度
+
+![](https://i.imgur.com/6PUe3Yp.png)
+
+```javascript
+// 測試大量圖檔
+for (let i = 0; i < 200; i++) {
+    this.load.image('bg' + i, 'assets/bg.png')
+}
+
+// 創建 text
+let percentText = this.add.text(320, 160, '', {
+    font: '24px Open Sans',
+    fill: '#ffffff'
+}).setOrigin(0.5, 0.5)
+
+// 偵聽處理檔案
+this.load.on('progress', value => {
+    percentText.setText(parseInt(value * 100) + '%')
+})
+
+// 偵聽載入檔案結束
+this.load.on('complete', () => {
+    percentText.destroy()		// 載入完，把它從畫面上清除
+})
+```
+
+
+
+
+
+## Follow
+
+有時候，我們希望不侷限在特定的區域內，而是隨著遊戲者的位置來進行遊戲的移動。這時候可以調整 camera 的設定來達到這個目的（ camera 跟隨著 player 的位置 ）。
+
+
+
+```js
+// 設定 camera 邊界，視角跟隨玩家
+// 目前是依照 this.physics.world 來決定 360, 1000
+this.physics.world.bounds.width = 360
+this.physics.world.bounds.height = 1000
+.....
+this.cameras.main.setBounds(0, 0, 360, 1000)
+this.cameras.main.startFollow(this.player)
+```
+
+![](https://i.imgur.com/6mXf1fH.png)
+
+這次我們學到了，如何設定 camera，依照 player 的位置，去移動 camera 的位置。可以朝著 x 軸移動的遊戲（馬力歐）；或者 y 軸移動的遊戲（小朋友下樓梯）等遊戲劇本，來設定 camera 以及 physics.world 的邊界。
+
+
+
+
+
+## 燈光 light
+
+首先你需要有 normal maps，可以使用工具來製作 [SpriteIlluminator](https://www.codeandweb.com/spriteilluminator/tutorials/normal-map-painting-with-spriteilluminator) 工具來製作。
+
+
+
+```javascript
+scene.preload = function () {
+    this.load.setPath('assets/');
+    
+    // 加載圖像, 01.png 為一般圖像 ;  01_n.png 為 normal map
+    this.load.image('character', ['01.png', '01_n.png']);
+}
+
+scene.create = function() {
+    let capguy = this.add.sprite(250, 300, 'character')
+    capguy.setScale(0.5)
+    
+    // 讓角色接受光源
+    capguy.setPipeline('Light2D')
+
+    // 在 (350, 250) 位置添加半徑 200 的光源
+    let light = this.lights.addLight(350, 250, 200)
+    this.lights.enable()
+        
+    // 設定環境燈
+    this.lights.setAmbientColor(0x555555)
+
+    // 滑鼠移動，變更燈光位置
+    this.input.on('pointermove', function (pointer) {
+        light.x = pointer.x;
+        light.y = pointer.y;
+    });
+}
+
+```
+
+如果載入 sprite sheet 的話，也必須有 normal map sheet，我們可以使用 TexturePack 工具產生 json 檔，使用 load.multiatlas() 載入兩種 sheet，將 normal 連結到 sprite sheet 上。
