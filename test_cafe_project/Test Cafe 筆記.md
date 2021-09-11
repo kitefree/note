@@ -102,33 +102,58 @@ testcafe chrome HelloWorld.js --speed 0.3
 
 
 
+啟用chrome
+
 ```
-#啟用chrome
 testcafe chrome day02.js
+```
 
-#啟用firefox
+啟用firefox
+
+```
 testcafe firefox day02.js
+```
 
-#啟用edge
+啟用edge
+
+```
 testcafe edge day02.js
+```
 
-#失敗
+
+
+同時執行兩個瀏覽器
+
+```
 testcafe chrome,firefox day02.js
+```
 
-#成功 ,本地端所有瀏覽器一起執行,但是最後沒有close,停在測試完的地方
+
+
+本地端所有瀏覽器執行
+
+```
 testcafe all day02.js
+```
 
-#無頭模式
+無頭模式
+
+```
 testcafe chrome:headless day02.js
+```
 
-#模擬iphone or android device
+模擬iphone or android device
+
+```
 testcafe "chrome:emulation:device=iphone X" day02.js
 testcafe "chrome:emulation:device=pixel 2" day02.js
+```
 
-#模擬器 + headless mode 
+模擬器 + headless mode 
+
+```
 testcafe "chrome:headless:emulation:device=iphone X" day02.js
 testcafe "chrome:headless:emulation:device=pixel 2" day02.js
-
 ```
 
 
@@ -139,4 +164,124 @@ testcafe "chrome:headless:emulation:device=pixel 2" day02.js
 ```
 testcafe -c 2 chrome day02.js --speed .5
 ```
+
+
+
+遠端跑自動化測試
+
+```
+testcafe remote day02.js
+testcafe remote day02.js --qr-code
+```
+
+
+
+
+
+報表
+
+spec
+
+```
+testcafe chrome day02.js -r spec
+```
+
+list
+
+```
+testcafe chrome day02.js -r list
+```
+
+minimal
+
+```
+testcafe chrome day02.js -r minimal
+```
+
+xunit:report.xml
+
+```
+testcafe chrome day02.js -r xunit:report.xml
+```
+
+
+
+```XML
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="TestCafe Tests: Chrome 92.0.4515.159 / Windows 10" tests="2" failures="0" skipped="0" errors="0" time="6.167" timestamp="Wed, 25 Aug 2021 01:28:00 GMT" >
+  <testcase classname="Getting Started" name="測試案例一" time="3.65">
+  </testcase>
+  <testcase classname="Getting Started" name="測試案例二" time="2.502">
+  </testcase>
+</testsuite>
+```
+
+
+
+json:report.json
+
+```
+testcafe chrome day02.js -r json:report.json
+```
+
+
+
+```JSON
+{
+  "startTime": "2021-08-25T03:15:25.322Z",
+  "endTime": "2021-08-25T03:15:32.590Z",
+  "userAgents": [
+    "Chrome 92.0.4515.159 / Windows 10"
+  ],
+  "passed": 2,
+  "total": 2,
+  "skipped": 0,
+  "fixtures": [
+    {
+      "name": "Getting Started",
+      "path": "E:\\note\\test_cafe_project\\day02\\day02.js",
+      "meta": {},
+      "tests": [
+        {
+          "name": "測試案例一",
+          "meta": {},
+          "errs": [],
+          "durationMs": 4735,
+          "unstable": false,
+          "screenshotPath": null,
+          "skipped": false
+        },
+        {
+          "name": "測試案例二",
+          "meta": {},
+          "errs": [],
+          "durationMs": 2513,
+          "unstable": false,
+          "screenshotPath": null,
+          "skipped": false
+        }
+      ]
+    }
+  ],
+  "warnings": []
+}
+```
+
+
+
+安裝外掛報表
+
+```
+testcafe chrome day02.js -r html:report.html
+```
+
+npm 市集
+
+```
+https://www.npmjs.com/search?q=testcafe-reporter-
+```
+
+
+
+![image-20210825124312808](E:\GitWorkSpace\note\test_cafe_project\Test Cafe 筆記.assets\image-20210825124312808.png)
 
