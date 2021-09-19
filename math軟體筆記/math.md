@@ -18,7 +18,7 @@ $$
 
 
 
-
+![tmp](https://i.imgur.com/vhqnGPd.png)
 
 
 
@@ -49,3 +49,15 @@ $$
   - Latex to xml or html 工具
   - windows 需要使用`chocolatey` 安裝
 
+- [製作可報讀的數學式](https://class.kh.edu.tw/19061/bulletin/msg_view/173)
+  - 教師協會提供的連結資源
+
+
+
+
+
+老師的分享
+
+- [maple](http://www.cybernet-ap.com.tw/zh.php?m=556&t=65,99)
+
+- [mathematica](https://www.wolfram.com/mathematica/)
